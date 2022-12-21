@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Configuration monitorInterval="1" packages="com.eurospider">
+
+	<Appenders>
+	
+		<File name="main" fileName="./zhlex.log">
+			<PatternLayout pattern="%d %p [%c] - &lt;%m&gt;%n"/>
+		</File>
+		
+		<Console name="console">
+			<PatternLayout pattern="%d %p [%c] - &lt;%m&gt;%n"/>
+		</Console>
+		
+	</Appenders>
+
+	<Loggers>
+
+		<Root level="info">
+			<AppenderRef ref="main"/>
+			<AppenderRef ref="console"/>
+		</Root>
+		
+	</Loggers>
+
+</Configuration>

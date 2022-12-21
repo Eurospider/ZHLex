@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 LEXspider <lexspider@eurospider.com>
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+ 
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+ 
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="sendung">
+    <xs:annotation>
+      <xs:appinfo>
+        <rdf:Description>
+          <dc:title>Datenmodell für LEXspider XML Export Schnittstelle</dc:title>
+          <dc:version>1.0</dc:version>
+          <dc:date>2013-04-08</dc:date>
+        </rdf:Description>
+      </xs:appinfo>
+      <xs:documentation>Gesamtpaket einer Übermittlung</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="info">
+          <xs:annotation>
+            <xs:documentation>Generelle Angaben zu dieser Sendung</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="version" type="xs:token">
+                <xs:annotation>
+                  <xs:documentation>Version des Schemas, dem diese XML-Instanz entspricht. Beispiel: 1.02</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="datumPublikation" type="xs:date">
+                <xs:annotation>
+                  <xs:documentation>Datum, an dem dieser Rechtsstand im Internet publiziert werden soll.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="datumErstellung" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation>Zeitstempel der Erstellung der XML-Instanz. Bei mehreren Dateien mit demselben datumPublikation gilt die jüngere Version.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="erlasse">
+          <xs:annotation>
+            <xs:documentation>Sammlung aller Erlasse, aufgehobener, geltender und allenfalls zukünftiger.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="erlass" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:documentation>Ein Erlass ist ein Objekt in der Rechtssammlung mit einer eigenen systematischen Nummer.  Achtung: Das Schema kann keine bestimmte Sortierung vorgeben!</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="nummern">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="erlassID" type="xs:positiveInteger">
+                            <xs:annotation>
+                              <xs:documentation>Eindeutige Identifikations-Nummer des Erlasses; wird einmal vergeben und ändert nie mehr. Nicht sprechend. Mit Unique Constraint abgesichert.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="syst" type="xs:token">
+                            <xs:annotation>
+                              <xs:documentation>Systematische (Rechtsbuch-)Nummer, ohne die Buchstaben "RB". Beispiel: 20.5684 oder 2.5241. Die RB-Nummer kann im Laufe der Zeit ändern, ist aber in einem gegebenen Moment eindeutig innerhalb aller an diesem Tag geltenden Erlasse - aber niicht unbedingt innerhalb der XML-Instanz, die auch frühere oder noch nicht in Kraft getretene Erlasse enthalten kann.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="struktur" type="xs:token">
+                            <xs:annotation>
+                              <xs:documentation>Struktur-Nummer; Einteilung im Systematischen Register. Beispiel: 10.29</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="autoren">
+                      <xs:annotation>
+                        <xs:documentation>Wer den Erlass beschlossen hat</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="autorID" type="xs:int" maxOccurs="unbounded">
+                            <xs:annotation>
+                              <xs:documentation>Es kann mehrere Autoren geben, z.B. bei konkordaten oder Verträgen. Abschliessender Katalog (siehe autorenStamm), mit Identity Constraint abgesichert.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="bezeichnungen">
+                      <xs:annotation>
+                        <xs:documentation>Erlasstitel und Abkürzungen</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="titelVoll" type="xs:token">
+                            <xs:annotation>
+                              <xs:documentation>Voll ausgeschriebener Erlass-Titel. Beispiel: "Gesetz über die direkten Steuern im Kanton Uri"</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="titelKurz" type="xs:token" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Kurzform des Titels. Beispiel: "Steuergesetz"</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="abkuerzung" type="xs:token" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Abkürzung des Erlasses. Beispiel: "WAVG"</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="typen">
+                      <xs:annotation>
+                        <xs:documentation>Qualifikation</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="erlassTypID" type="xs:positiveInteger">
+                            <xs:annotation>
+                              <xs:documentation>gemäss abschliessender Liste; siehe Element typenStamm. Mit Identity Constraint abgesichert.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="normStufeID">
+                            <xs:annotation>
+                              <xs:documentation>gemäss abschliessender Liste; siehe Element stufenStamm. Mit Identity Constraint abgesichert.</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:integer">
+                                <xs:minInclusive value="0"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="daten">
+                      <xs:annotation>
+                        <xs:documentation>Datums-Angaben zum ganzen Erlass.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="iktErlass" type="xs:date">
+                            <xs:annotation>
+                              <xs:documentation>Datum des Inkrafttretens der ersten Fassung dieses Erlasses</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="aktErlass" type="xs:date" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Letzter Tag der Gültigkeit des Erlasses. Kommt nur vor, wenn der Erlass ausser Kraft gesetzt worden ist. Kann auch in der Zukunft liegen. </xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="beschluesse">
+                            <xs:annotation>
+                              <xs:documentation>Ein Erlass kann auf den Beschlüssen mehrerer Autoren beruhen, die je an unterschiedlichen Tagen beschlossen haben (z.B. bei Konkordaten)</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="beschlussDatum" type="xs:date" maxOccurs="unbounded"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="letzteAenderung" type="xs:date">
+                            <xs:annotation>
+                              <xs:documentation>Datum der letzten Modifikation dieses Erlasses: neuer Erlass, neue Fassung, Ausserkraftsetzung oder neue Version (aufgrund editorischer Änderungen). Diese Information kann dazu dienen, jene Erlasse auszuwählen, die gegenüber der letzten Aktualisierung eine Änderung erfahren haben - ohne dass alle Fassungen im Einzelnen kontrolliert werden müssen.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="fassungen" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Pro Erlass hat es mind. 1 Fassung.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="fassung" maxOccurs="unbounded">
+                            <xs:annotation>
+                              <xs:documentation>Eine Fassung liegt dann vor, wenn der Autor selber eine Änderung am Erlass vorgenommen hat. Versionen (selbe Fassung, editorische Änderungen) werden nicht separat ausgewiesen.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="nummer" type="xs:positiveInteger">
+                                  <xs:annotation>
+                                    <xs:documentation>Innerhalb des Erlasses fortlaufende Nummerierung; eindeutig innerhalb des Erlasses. Nicht-sprechende Nummer: 1 muss nicht bedeuten, dass es sich historisch um die 1. Fassung des Erlasses handelt; es ist bloss die erste, d.h. die älteste im System verfügbare Fassung des Erlasses.</xs:documentation>
+                                  </xs:annotation>
+                                </xs:element>
+                                <xs:element name="iktFassung" type="xs:date">
+                                  <xs:annotation>
+                                    <xs:documentation>Datum des Inkrafttretens dieser Fassung. Bei der  Fassung Nr. 1 deckt sich diese Angabe möglicherweise mit dem iktErlass, selbst wenn es sich nicht um die historisch 1. (Ur-)Fassung handelt.</xs:documentation>
+                                  </xs:annotation>
+                                </xs:element>
+                                <xs:element name="sicherheit" type="xs:date" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Datum, von welchem an feststand, dass diese Fassung tatsächlich gilt. Idealfall: gleich wie iktFassung. Auch ein anderes Datum ist möglich, z.B. Datum der Erwahrung einer Volksabstimmung über ein Referendum.</xs:documentation>
+                                  </xs:annotation>
+                                </xs:element>
+                                <xs:element name="aktFassung" type="xs:date" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Datum des Ausserkrafttretens der Fassung. Kann auch in der Zukunft liegen. Bei älteren Erlassen wird das Ausserkrafttreten der historisch ersten Fassung nicht rekonstruiert; stattdessen wird es auf den Vortag des Inkrafttretens der erstem im System redigierten Fassung gesetzt.</xs:documentation>
+                                  </xs:annotation>
+                                </xs:element>
+                                <xs:element name="publikationen">
+                                  <xs:annotation>
+                                    <xs:documentation>Eine Fassung kann auf mehrere Publikationen zurückgehen.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="publikation" maxOccurs="unbounded">
+                                        <xs:annotation>
+                                          <xs:documentation>Publikationsverweis im Format "AB 28.6.2011" oder "AB 1.7.2011 Seite 24" (AB=Amtsblatt). Freier Text. Kann auch fehlen, dies wird mit dem Zeichen "-" markiert.</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:simpleContent>
+                                            <xs:extension base="xs:token">
+                                              <xs:attribute name="publicationType" use="required">
+                                                <xs:annotation>
+                                                  <xs:documentation>Inkraftsetzung oder Aufhebung. Alle Publikationen mit Ausnahme der Ausserkraftsetzung sind solche vom Typ "i".</xs:documentation>
+                                                </xs:annotation>
+                                                <xs:simpleType>
+                                                  <xs:restriction base="xs:token">
+                                                    <xs:enumeration value="i"/>
+                                                    <xs:enumeration value="a"/>
+                                                  </xs:restriction>
+                                                </xs:simpleType>
+                                              </xs:attribute>
+                                              <xs:attribute name="url" type="xs:anyURI">
+                                                <xs:annotation>
+                                                  <xs:documentation>Kann sich nur auf eine einzelne Amtsblatt-Nummer beziehen, nicht auf eine bestimmte Seite im Amtsblatt.</xs:documentation>
+                                                </xs:annotation>
+                                              </xs:attribute>
+                                            </xs:extension>
+                                          </xs:simpleContent>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="aenderungen" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Bei der 1. Fassung fehlen die Angaben zu Änderungen.</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="aenderung" maxOccurs="unbounded">
+                                        <xs:annotation>
+                                          <xs:documentation>Achtung: Es gibt hier nicht immer pro Artikel eine individuelle Änderung; manchmal sind mehrere Artikel zusammengenommen.</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="artikel" type="xs:token" minOccurs="0">
+                                              <xs:annotation>
+                                                <xs:documentation>Beispiel: "Art. 3.1f, 8a, 8b"</xs:documentation>
+                                              </xs:annotation>
+                                            </xs:element>
+                                            <xs:element name="typ" minOccurs="0">
+                                              <xs:annotation>
+                                                <xs:documentation>insert, modify, delete. Siehe Enumeration.</xs:documentation>
+                                              </xs:annotation>
+                                              <xs:simpleType>
+                                                <xs:restriction base="xs:token">
+                                                  <xs:enumeration value="n"/>
+                                                  <xs:enumeration value="m"/>
+                                                  <xs:enumeration value="d"/>
+                                                </xs:restriction>
+                                              </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="anmerkungen" type="xs:string" minOccurs="0">
+                                              <xs:annotation>
+                                                <xs:documentation>Freier Text. Beispiel: "neues Alinea"</xs:documentation>
+                                              </xs:annotation>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="dateiName" type="xs:token" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Es werden nur Dateien von Erlassen übermittelt, die noch in Kraft sind, Format: Nur Dateiname, ohne Path, ohne Extension. Achtung: Nur die aktuelle und ev. zukünftige Fassungen werden bei den Updates als PDF/HTML geliefert. Es gibt (aufgehobene) Erlasse, für die überhaupt keine Dokumente vorliegen. Der Dateiname setzt sich zusammen aus
+1. dem Datum der Fassung
+2. der systematischen Nummer (Punkt wird ersetzt durch Bindestrich).
+Beispiel: 20110614-3-3122   oder
+20070428-10-8547</xs:documentation>
+                                  </xs:annotation>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                      <xs:unique name="nummerKey">
+                        <xs:selector xpath="fassung"/>
+                        <xs:field xpath="nummer"/>
+                      </xs:unique>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="autorenStamm">
+          <xs:annotation>
+            <xs:documentation>Änderungen im Verzeichnis der Autoren werden zusätzlich mit einer gedruckten Liste gemeldet.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="autorenStammID" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:documentation>Die ID des Autors bleibt immer gleich, die Bezeichnung kann im Laufe der Zeit ändern.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:int">
+                      <xs:attribute name="autorText" type="xs:token" use="required">
+                        <xs:annotation>
+                          <xs:documentation>Beispiel: "Landrat"</xs:documentation>
+                        </xs:annotation>
+                      </xs:attribute>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="typenStamm">
+          <xs:annotation>
+            <xs:documentation>Änderungen im Verzeichnis der Typen werden zusätzlich mit einer gedruckten Liste gemeldet.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="typenStammID" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:documentation>Die ID des Erlasstyps bleibt immer gleich, die Bezeichnung kann im Laufe der Zeit ändern.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:positiveInteger">
+                      <xs:attribute name="typText" type="xs:token" use="required">
+                        <xs:annotation>
+                          <xs:documentation>Beispiel: "Vollzugsbestimmungen"</xs:documentation>
+                        </xs:annotation>
+                      </xs:attribute>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="stufenStamm">
+          <xs:annotation>
+            <xs:documentation>Änderungen im Verzeichnis der Normstufen werden zusätzlich mit einer gedruckten Liste gemeldet.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="stufenStammID" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:documentation>Die ID der Normstufe bleibt immer gleich, die Bezeichnung kann im Laufe der Zeit ändern. </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:integer">
+                      <xs:attribute name="stufenText" type="xs:token" use="required">
+                        <xs:annotation>
+                          <xs:documentation>Beispiel: "VO Direktion"</xs:documentation>
+                        </xs:annotation>
+                      </xs:attribute>
+                      <xs:attribute name="level" use="required">
+                        <xs:annotation>
+                          <xs:documentation>Definiert die Hierarchie-Stufe. Kleinere Zahl=höhere Stufe. </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                          <xs:restriction base="xs:integer">
+                            <xs:minInclusive value="0"/>
+                          </xs:restriction>
+                        </xs:simpleType>
+                      </xs:attribute>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+          <!--  Die Normstufe jedes Erlasses muss im Stamm vorhanden sein.  -->
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <!--  Der Autor jedes Erlasses muss im Stamm vorhanden sein.  -->
+    <xs:key name="autorKey">
+      <xs:selector xpath="autorenStamm/autorenStammID"/>
+      <xs:field xpath="."/>
+    </xs:key>
+    <xs:keyref name="autorKeyRef" refer="autorKey">
+      <xs:selector xpath="erlasse/erlass/autoren/autorID"/>
+      <xs:field xpath="."/>
+    </xs:keyref>
+    <!--  -->
+    <!--  Der Typ jedes Erlasses muss im Stamm vorhanden sein.  -->
+    <xs:key name="typenKey">
+      <xs:selector xpath="typenStamm/typenStammID"/>
+      <xs:field xpath="."/>
+    </xs:key>
+    <xs:keyref name="typenKeyRef" refer="typenKey">
+      <xs:selector xpath="erlasse/erlass/typen/erlassTypID"/>
+      <xs:field xpath="."/>
+    </xs:keyref>
+    <xs:key name="stufenKey">
+      <xs:selector xpath="stufenStamm/stufenStammID"/>
+      <xs:field xpath="."/>
+    </xs:key>
+    <xs:keyref name="stufenKeyRef" refer="stufenKey">
+      <xs:selector xpath="erlasse/erlass/typen/normStufeID"/>
+      <xs:field xpath="."/>
+    </xs:keyref>
+  </xs:element>
+</xs:schema>
